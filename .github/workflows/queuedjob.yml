@@ -1,0 +1,30 @@
+name: queuedjob
+
+on:
+  push:
+    branches: [main ]
+  workflow_dispatch:
+
+jobs:
+  checkout:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - Job: Success-1
+          - Job: Failure-1
+          - Job: Cancel-1
+          - Job: Fourth-job
+      max-parallel: 1
+      fail-fast: true
+    steps:
+      - name: test
+        run: |
+          echo "This is job $Job_name"
+          if [ ${Job_name} == "Success-1" ]; then
+              exit 0
+          else
+              exit 1
+          fi
+    env:
+      Job_name: ${{matrix.job}}
